@@ -1,4 +1,3 @@
-Here's a professional, clear README for your GitHub repository:
 
 ---
 
