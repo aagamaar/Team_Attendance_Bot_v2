@@ -1,286 +1,146 @@
-
----
-
 # 📊 Team Attendance Bot
 
-[![Python](https://img.shields.io/badge/Python-3.14%2B-blue.svg)](https://www.python.org/)
-[![Telegram](https://img.shields.io/badge/Telegram-Bot-0088cc.svg)](https://t.me/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+> **A multi-tenant attendance and leave management system for small teams — built as a Telegram Bot.**
 
-> **A multi-tenant attendance and leave management system for small teams — built as a Telegram Bot**
+[![Try it on Telegram](https://img.shields.io/badge/Telegram-Try_the_Bot-2CA5E0?logo=telegram&logoColor=white)](https://t.me/YOUR_BOT_USERNAME)
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
+[![Hosted on Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7.svg)](https://render.com)
 
----
-
-## 📋 Problem Statement
-
-Small organizations (10-50 employees) track daily attendance through WhatsApp polls. Every morning, employees respond with "Present" or "Leave". At month-end, admins manually count responses and update spreadsheets.
-
-### ❌ Problems:
-
-| Employee Side | Admin Side |
-|---------------|------------|
-| Notification fatigue from daily polls | 200+ manual checks per month |
-| No privacy (everyone sees who's on leave) | Error-prone manual counting |
-| No visibility into leave balance | No real-time attendance view |
-| Easy to forget responding | Separate spreadsheet for leave tracking |
+**🤖 Live demo:** [t.me/YOUR_BOT_USERNAME](https://t.me/YOUR_BOT_USERNAME) — send `/start`, create a test company, and try it in under a minute.
 
 ---
 
-## 🚀 Solution
+## The Problem
 
-A **Telegram Bot** that makes attendance tracking effortless:
+Small teams (10–50 people) track attendance through daily WhatsApp polls. Employees get notification fatigue and have no privacy or visibility into their leave balance. Admins do 200+ manual checks a month, count responses by hand, and maintain a separate spreadsheet for leaves.
 
-- ⚡ **2 seconds** to mark attendance
-- 📱 **No new apps** — uses existing Telegram
-- 👁️ **Real-time visibility** for employees & admins
-- 📊 **Automatic leave tracking** (4 leaves/month)
-- 🏖️ **Weekends ignored** automatically
-- 🏢 **Multi-tenant** — supports multiple organizations
+## The Solution
 
----
+A Telegram bot, so there's **no new app to install**:
 
-## 🎯 Features
-
-### For Employees
-
-| Command | Description |
-|---------|-------------|
-| `/start` | Welcome message & available commands |
-| `/present` | Mark yourself present (Mon-Fri only) |
-| `/leave` | Request leave (deducts from 4/month quota) |
-| `/balance` | Check remaining leave balance |
-| `/members` | See all team members |
-| `/profile` | View your profile (department, email) |
-
-### For Administrators
-
-| Command | Description |
-|---------|-------------|
-| `/admin_today` | View complete team attendance for today |
-| `/admin_month` | View monthly summary with present/leave counts |
-| `/reset_balance` | Reset all team members' leave balances |
-| `/export_csv` | Export attendance data as CSV report |
-
-### Management Commands
-
-| Command | Description |
-|---------|-------------|
-| `/delete_employee` | Remove an employee from the organization |
-| `/make_admin` | Promote an employee to admin (co-founder) |
-| `/remove_admin` | Demote an admin to regular employee |
-| `/set_department` | Set your department |
-| `/set_email` | Set your email address |
-
-### Organization Setup
-
-| Command | Description |
-|---------|-------------|
-| `/create_company <name>` | Create a new organization (you become admin) |
-| `/join <code>` | Join an existing organization using join code |
+- ⚡ Mark attendance in 2 seconds with `/present`
+- 📊 Automatic leave tracking — 4 leaves/month, auto-reset each month
+- 👁️ Real-time team view and one-tap CSV reports for admins
+- 🏖️ Weekends ignored automatically
+- 🏢 Multi-tenant — any number of organizations, fully isolated, joined via secure 6-character codes
 
 ---
 
-## 📊 CSV Export Example
+## 📱 Screenshots
 
-The `/export_csv` command generates a comprehensive report including:
+### Employee experience
 
-- **Employee Summary** — names, departments, leave balances, attendance stats
-- **Monthly Attendance** — present days, leave days, attendance rate (%)
-- **Recent Records** — last 30 days of attendance
-- **Leave Balance Summary** — team-wide leave statistics
+| Onboarding & joining | Marking attendance | Profile & balance |
+|---|---|---|
+| ![Join flow](docs/screenshots/employee-join.jpg) | ![Mark present](docs/screenshots/employee-present.jpg) | ![Profile](docs/screenshots/employee-profile.jpg) |
 
----
+### Admin experience
 
-## 🛠️ Technology Stack
+| Creating a company | Daily team view | CSV export |
+|---|---|---|
+| ![Create company](docs/screenshots/admin-create.jpg) | ![Today's attendance](docs/screenshots/admin-today.jpg) | ![CSV report](docs/screenshots/admin-export.jpg) |
 
-| Technology | Purpose |
-|------------|---------|
-| **Python 3.14+** | Core programming language |
-| **python-telegram-bot** | Telegram Bot API wrapper |
-| **SQLite** | Local database for storage |
-| **Render** | 24/7 cloud hosting (optional) |
+### The exported report, opened in Google Sheets
+
+![Report in Sheets](docs/screenshots/report-sheets.png)
 
 ---
 
-## 📂 Project Structure
+## 🎯 Commands
+
+| For everyone | For admins |
+|---|---|
+| `/start` — welcome & command list | `/admin_today` — full team attendance today |
+| `/present` — mark present (Mon–Fri) | `/admin_month` — monthly summary |
+| `/leave` — request leave (4/month) | `/export_csv` — downloadable CSV report |
+| `/balance` — remaining leaves | `/reset_balance` — reset team leave balances |
+| `/members` — see the team | `/make_admin` / `/remove_admin` |
+| `/profile`, `/set_department`, `/set_email` | `/delete_employee` |
+| `/create_company <name>` / `/join <code>` | |
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+| Layer | Choice | Why |
+|---|---|---|
+| Language | Python 3.12 | |
+| Bot framework | python-telegram-bot 21.x | async handlers, long polling |
+| Database | SQLite | zero-config, perfect for small-team scale |
+| Keep-alive | Flask health endpoint + cron-job.org | required for polling bots on free hosting |
+| Hosting | Render | deploy from GitHub in minutes |
 
 ```
-Team_Attendance_Bot/
-├── bot.py                 # Main entry point
-├── database.py            # Database operations
-├── database_setup.py      # Table creation script
-├── utils.py               # Rate limiting utilities
-├── requirements.txt       # Python dependencies
-├── commands/
-│   ├── __init__.py
-│   ├── admin.py           # Admin commands
-│   ├── employee.py        # Employee commands
-│   ├── export.py          # CSV export
-│   └── management.py      # Management commands
-└── attendance.db          # SQLite database (auto-generated)
+Team_Attendance_Bot_v2/
+├── bot.py                 # Entry point: handlers, Flask health server
+├── database.py            # Schema (auto-created on startup), all queries, IST time helpers
+├── database_setup.py      # Optional manual setup (safe — never deletes data)
+├── utils.py               # Rate limiting
+└── commands/
+    ├── employee.py        # /present /leave /balance /members
+    ├── admin.py           # /admin_today /admin_month /reset_balance
+    ├── management.py      # roles, department, email, profile
+    └── export.py          # CSV report generation
 ```
+
+**Design decisions worth noting:**
+- **Lazy monthly reset** — leave balances reset the first time an employee interacts in a new month (tracked via `last_reset_month`), so no scheduler is needed.
+- **Timezone-correct** — all dates computed in IST (`Asia/Kolkata`), so attendance dates are right even on UTC servers.
+- **Self-initializing schema** — tables are created automatically on first boot (`CREATE TABLE IF NOT EXISTS`); deploys need no manual setup step.
+- **Data isolation** — every query is scoped by `org_id`; one organization can never see another's data.
+- **Abuse protection** — per-user rate limiting (20 commands/minute) and admin-only guards on sensitive commands.
 
 ---
 
-## 🚦 Getting Started
+## 🚦 Run It Locally
 
-### Prerequisites
-
-- Python 3.14+
-- Telegram account
-- Bot token from [@BotFather](https://t.me/BotFather)
-
-### Local Setup
-
-1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/Team_Attendance_Bot.git
-cd Team_Attendance_Bot
-```
-
-2. **Install dependencies**
-```bash
+git clone https://github.com/aagamaar/Team_Attendance_Bot_v2.git
+cd Team_Attendance_Bot_v2
 pip install -r requirements.txt
-```
 
-3. **Create a Telegram bot**
-   - Message [@BotFather](https://t.me/BotFather) on Telegram
-   - Send `/newbot`
-   - Follow instructions to get your bot token
-
-4. **Add your bot token**
-```python
-# In bot.py, replace:
-TOKEN = "YOUR_BOT_TOKEN_HERE"
-```
-
-5. **Setup the database**
-```bash
-python database_setup.py
-```
-
-6. **Run the bot**
-```bash
+# Get a token from @BotFather on Telegram, then:
+export TELEGRAM_TOKEN="your-token-here"     # Windows: set TELEGRAM_TOKEN=your-token-here
 python bot.py
 ```
 
-7. **Test on Telegram**
-   - Search for your bot by username
-   - Send `/start`
-   - Create a company: `/create_company MyCompany`
-   - Mark attendance: `/present`
+Open your bot on Telegram → `/start` → `/create_company MyCompany` → `/present`. Done.
+
+## ☁️ Deploy on Render (free)
+
+1. Fork/push this repo to GitHub
+2. [render.com](https://render.com) → **New → Web Service** → connect the repo
+3. Build command: `pip install -r requirements.txt` · Start command: `python bot.py`
+4. Add environment variable `TELEGRAM_TOKEN`
+5. Deploy — tables create themselves on first boot
+
+**Keep-alive (required):** free Render services sleep after 15 minutes, and a sleeping polling bot can't hear messages. Create a free [cron-job.org](https://cron-job.org) job that pings your service URL every 10 minutes.
+
+> ⚠️ **Free-tier note:** Render's free filesystem is ephemeral — the SQLite database resets when the service redeploys or restarts. Fine for demos and trials. For production, attach a persistent disk (Render Starter) or migrate to Postgres.
 
 ---
 
-## ☁️ Deployment (24/7 Hosting)
+## 📈 Business Rules
 
-### Deploy on Render (Free)
+- 4 leaves per employee per month; unused leaves don't carry over
+- Balances reset automatically each calendar month
+- Weekends are ignored — no marking needed, no leave deducted
+- One attendance record per person per day (double-marking blocked at the database level)
+- Multiple admins per organization supported
 
-1. Push your code to GitHub
-2. Go to [render.com](https://render.com)
-3. Create a new **Web Service**
-4. Connect your GitHub repository
-5. Add environment variable: `TELEGRAM_TOKEN` = your bot token
-6. Click **Deploy**
+## 🗺️ Roadmap
 
-Your bot will run 24/7 — even when your computer is off!
-
----
-
-## 📈 Business Rules Enforced
-
-```
-📅 4 leaves per employee per month
-🔄 Unused leaves do NOT carry over
-🎉 Weekends automatically ignored (no marking needed)
-📆 Leaves reset on the 1st of every month
-👑 Multiple admins per organization supported
-```
-
----
-
-## 🔒 Security Features
-
-| Feature | Description |
-|---------|-------------|
-| **Data isolation** | Each organization sees ONLY their data |
-| **Rate limiting** | Prevents spam (20 commands per minute) |
-| **Admin verification** | Sensitive commands require admin role |
-| **Join codes** | 6-character random codes for secure joining |
-
----
-
-## 📝 Commands Quick Reference
-
-```
-Command               Description
-─────────────────────────────────────────────────────────
-/start                Welcome message
-/create_company       Create new organization (become admin)
-/join                 Join existing organization
-
-/present              Mark attendance (Mon-Fri only)
-/leave                Request leave (4/month limit)
-/balance              Check remaining leaves
-/members              See team members
-/profile              View your profile
-
-/admin_today          Today's team attendance (Admin)
-/admin_month          Monthly summary report (Admin)
-/reset_balance        Reset all team leaves (Admin)
-/export_csv           Export CSV report (Admin)
-
-/delete_employee      Remove an employee (Admin)
-/make_admin           Promote to admin (Admin)
-/remove_admin         Demote from admin (Admin)
-/set_department       Set your department
-/set_email            Set your email
-```
-
----
-
-## 📊 Impact Metrics
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Time to mark attendance | 30 seconds | 2 seconds | **93% faster** |
-| Admin monthly reporting | Hours | Instant | **99% reduction** |
-| Manual counting errors | High | Zero | **100% elimination** |
-
----
-
-## 🤝 Contributing
-
-Issues and pull requests are welcome! For major changes, please open an issue first.
-
----
-
-## 📄 License
-
-MIT License — free for personal and commercial use.
+- [ ] Undo command for mistaken `/present` or `/leave`
+- [ ] Half-day leave support
+- [ ] Postgres option for persistent hosting
+- [ ] Daily reminder (opt-in) for employees who haven't marked
 
 ---
 
 ## 👩‍💻 Author
 
-**Aagama A R**
+**Aagama A R** — [GitHub](https://github.com/aagamaar) · [LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN)
 
----
+Built with [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot). Hosted on [Render](https://render.com).
 
-## 🙏 Acknowledgments
-
-- [@BotFather](https://t.me/BotFather) for Telegram Bot API
-- [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) library
-- [Render](https://render.com) for free hosting
-
----
-
-<div align="center">
-
-**⭐ Star this repo if you found it useful!**
-
-*Built with ❤️ for small teams*
-
-</div>
-
----
+⭐ **Star this repo if you found it useful!**
