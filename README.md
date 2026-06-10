@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![Hosted on Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7.svg)](https://render.com)
 
-**🤖 Live demo:** [t.me/YOUR_BOT_USERNAME](https://t.me/YOUR_BOT_USERNAME) — send `/start`, create a test company, and try it in under a minute.
+**🤖 Live demo:** [t.me/Att_end_ance_bot](https://t.me/Att_end_ance_bot) — send `/start`, create a test company, and try it in under a minute.
 
 ---
 
