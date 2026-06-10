@@ -4,7 +4,7 @@ from telegram.ext import ContextTypes
 from utils import is_rate_limited
 from database import (
     conn, cursor, get_employee, is_weekend, reset_balance_if_needed,
-    mark_attendance, take_leave
+    mark_attendance, take_leave, today_ist
 )
 from datetime import date
 
@@ -23,7 +23,7 @@ async def present(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     employee_id, org_id, name, balance, is_admin, org_name, join_code, dept, email = employee
-    today_obj = date.today()
+    today_obj = today_ist()
     
     if is_weekend(today_obj):
         await update.message.reply_text("🏖️ It's the weekend! No need to mark attendance.")
@@ -52,7 +52,7 @@ async def leave(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     employee_id, org_id, name, balance, is_admin, org_name, join_code, dept, email = employee
-    today_obj = date.today()
+    today_obj = today_ist()
     
     if is_weekend(today_obj):
         await update.message.reply_text("🏖️ Weekends are already off!")

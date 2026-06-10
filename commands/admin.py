@@ -2,7 +2,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from utils import is_rate_limited
-from database import cursor, conn, get_employee
+from database import cursor, conn, get_employee, today_ist
 from datetime import date
 
 async def admin_today(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -20,7 +20,7 @@ async def admin_today(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     employee_id, org_id, name, balance, is_admin, org_name, join_code, dept, email = employee
-    today_str = date.today().isoformat()
+    today_str = today_ist().isoformat()
     
     cursor.execute("SELECT id, name FROM employees WHERE org_id = ?", (org_id,))
     all_employees = cursor.fetchall()
@@ -60,12 +60,12 @@ async def admin_month(update: Update, context: ContextTypes.DEFAULT_TYPE):
     employee_id, org_id, name, balance, is_admin, org_name, join_code, dept, email = employee
     
     # FIX: Define current_month here
-    current_month = date.today().strftime("%Y-%m")
+    current_month = today_ist().strftime("%Y-%m")
     
     cursor.execute("SELECT id, name FROM employees WHERE org_id = ?", (org_id,))
     all_employees = cursor.fetchall()
     
-    report = f"📆 {org_name} - {date.today().strftime('%B %Y')}\n\n"
+    report = f"📆 {org_name} - {today_ist().strftime('%B %Y')}\n\n"
     
     for emp_id, emp_name in all_employees:
         cursor.execute('''

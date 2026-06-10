@@ -2,7 +2,7 @@
 from telegram import Update, InputFile
 from telegram.ext import ContextTypes
 from utils import is_rate_limited
-from database import cursor, get_employee
+from database import cursor, get_employee, today_ist, now_ist
 from datetime import date, datetime
 import csv
 import io
@@ -28,7 +28,7 @@ async def export_csv(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Header
     writer.writerow(['ATTENDANCE REPORT', org_name])
-    writer.writerow(['Report Date', datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
+    writer.writerow(['Report Date', now_ist().strftime('%Y-%m-%d %H:%M:%S')])
     writer.writerow([])
     
     # Employee Summary
@@ -50,8 +50,8 @@ async def export_csv(update: Update, context: ContextTypes.DEFAULT_TYPE):
     writer.writerow([])
     
     # Monthly Attendance
-    current_month = date.today().strftime("%Y-%m")
-    month_name = date.today().strftime("%B %Y")
+    current_month = today_ist().strftime("%Y-%m")
+    month_name = today_ist().strftime("%B %Y")
     
     writer.writerow([f'MONTHLY ATTENDANCE - {month_name}'])
     writer.writerow(['Employee Name', 'Department', 'Present Days', 'Leave Days', 'Attendance Rate (%)'])
@@ -120,13 +120,13 @@ async def export_csv(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Send the file
     output.seek(0)
-    filename = f"{org_name}_Attendance_Report_{date.today().strftime('%Y-%m-%d')}.csv"
+    filename = f"{org_name}_Attendance_Report_{today_ist().strftime('%Y-%m-%d')}.csv"
     file = InputFile(output.getvalue().encode('utf-8'), filename=filename)
     
     await update.message.reply_document(
         document=file, 
         caption=f"📊 {org_name} - Attendance Report\n"
-                f"📅 {datetime.now().strftime('%B %d, %Y')}\n"
+                f"📅 {now_ist().strftime('%B %d, %Y')}\n"
                 f"👥 {len(employees)} employees\n\n"
                 f"Open in Google Sheets or Excel"
     )
