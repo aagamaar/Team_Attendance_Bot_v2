@@ -29,7 +29,7 @@ from utils import is_rate_limited
 # Import the start and create_company functions (keep these in main bot.py for simplicity)
 from telegram import Update
 from telegram.ext import ContextTypes
-from database import cursor, conn, get_employee, generate_join_code
+from database import cursor, conn, get_employee, generate_join_code, today_ist
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -93,8 +93,8 @@ async def create_company(update: Update, context: ContextTypes.DEFAULT_TYPE):
                    (company_name, join_code, user_id))
     org_id = cursor.lastrowid
     
-    cursor.execute('INSERT INTO employees (org_id, telegram_id, name, leave_balance, is_admin) VALUES (?, ?, ?, 4, 1)',
-                   (org_id, user_id, name))
+    cursor.execute('INSERT INTO employees (org_id, telegram_id, name, leave_balance, is_admin, last_reset_month) VALUES (?, ?, ?, 4, 1, ?)',
+                   (org_id, user_id, name, today_ist().strftime("%Y-%m")))
     conn.commit()
     
     await update.message.reply_text(f"✅ '{company_name}' created!\nJoin code: {join_code}\nShare with employees.")
@@ -127,8 +127,8 @@ async def join_company(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     org_id, org_name = org
     
-    cursor.execute('INSERT INTO employees (org_id, telegram_id, name, leave_balance, is_admin) VALUES (?, ?, ?, 4, 0)',
-                   (org_id, user_id, name))
+    cursor.execute('INSERT INTO employees (org_id, telegram_id, name, leave_balance, is_admin, last_reset_month) VALUES (?, ?, ?, 4, 0, ?)',
+                   (org_id, user_id, name, today_ist().strftime("%Y-%m")))
     conn.commit()
     
     await update.message.reply_text(f"✅ Joined '{org_name}'!\nUse /present to mark attendance.")
