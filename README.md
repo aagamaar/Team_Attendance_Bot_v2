@@ -2,7 +2,7 @@
 
 > **A multi-tenant attendance and leave management system for small teams — built as a Telegram Bot.**
 
-[![Try it on Telegram](https://img.shields.io/badge/Telegram-Try_the_Bot-2CA5E0?logo=telegram&logoColor=white)](https://t.me/YOUR_BOT_USERNAME)
+[![Try it on Telegram](https://img.shields.io/badge/Telegram-Try_the_Bot-2CA5E0?logo=telegram&logoColor=white)](https://t.me/Att_end_ance_bot)
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![Hosted on Render](https://img.shields.io/badge/Hosted_on-Render-46E3B7.svg)](https://render.com)
 
@@ -32,17 +32,13 @@ A Telegram bot, so there's **no new app to install**:
 
 | Onboarding & joining | Marking attendance | Profile & balance |
 |---|---|---|
-| ![Join flow](docs/screenshots/employee-join.jpg) | ![Mark present](docs/screenshots/employee-present.jpg) | ![Profile](docs/screenshots/employee-profile.jpg) |
+| ![Join flow](Screenshots/employee-join.jpg) | ![Mark present](Screenshots/employee-present.jpg) | ![Profile](Screenshots/employee-profile.jpg) |
 
 ### Admin experience
 
 | Creating a company | Daily team view | CSV export |
 |---|---|---|
-| ![Create company](docs/screenshots/admin-create.jpg) | ![Today's attendance](docs/screenshots/admin-today.jpg) | ![CSV report](docs/screenshots/admin-export.jpg) |
-
-### The exported report, opened in Google Sheets
-
-![Report in Sheets](docs/screenshots/report-sheets.png)
+| ![Create company](Screenshots/admin-create.jpg) | ![Today's attendance](Screenshots/admin-today.jpg) | ![CSV report](Screenshots/admin-export.jpg) |
 
 ---
 
@@ -68,7 +64,7 @@ A Telegram bot, so there's **no new app to install**:
 | Bot framework | python-telegram-bot 21.x | async handlers, long polling |
 | Database | SQLite | zero-config, perfect for small-team scale |
 | Keep-alive | Flask health endpoint + cron-job.org | required for polling bots on free hosting |
-| Hosting | Render | deploy from GitHub in minutes |
+| Hosting | Render | deploy from Github in minutes |
 
 ```
 Team_Attendance_Bot_v2/
@@ -76,11 +72,14 @@ Team_Attendance_Bot_v2/
 ├── database.py            # Schema (auto-created on startup), all queries, IST time helpers
 ├── database_setup.py      # Optional manual setup (safe — never deletes data)
 ├── utils.py               # Rate limiting
-└── commands/
-    ├── employee.py        # /present /leave /balance /members
-    ├── admin.py           # /admin_today /admin_month /reset_balance
-    ├── management.py      # roles, department, email, profile
-    └── export.py          # CSV report generation
+├── requirements.txt       # Dependencies
+├── .python-version        # Pins Python 3.12 on Render
+├── commands/
+│   ├── employee.py        # /present /leave /balance /members
+│   ├── admin.py           # /admin_today /admin_month /reset_balance
+│   ├── management.py      # roles, department, email, profile
+│   └── export.py          # CSV report generation
+└── Screenshots/           # Demo images used in this README
 ```
 
 **Design decisions worth noting:**
